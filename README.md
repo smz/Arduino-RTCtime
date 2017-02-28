@@ -12,7 +12,7 @@ Forked from the excelent "Rtc by Makuna" library (https://github.com/Makuna/Rtc)
 ## Installing this library (_prefered method_)
  - Using your Arduino IDE, open the Library Manager, search for "RTCtime by smz" and install.
  
- *N.B.: *This method is not available yet: it will be available when the library will reach its first official release*
+ *N.B.: This method is not available yet: it will be available when the library will reach its first official release*
 
 ## Installing this library from GitHub (_alternative method_)
  - Create a directory named "RTCtime" in your Arduino\libraries folder.
