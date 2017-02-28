@@ -25,3 +25,5 @@ Forked from the excelent "Rtc by Makuna" library (https://github.com/Makuna/Rtc)
 
 ## Donating
 If you like this library and you use it, please consider donating, but please __consider donating to the orignal devloper too__, as **he** did much of the work! 
+
+[![Donate](http://img.shields.io/paypal/donate.png?color=yellow)](https://www.paypal.me/SergioManzi)
