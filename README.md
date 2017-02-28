@@ -10,7 +10,9 @@ Forked from the excelent "Rtc by Makuna" library (https://github.com/Makuna/Rtc)
  - Supports SoftwareWire library (*hopefuly, untested*)
 
 ## Installing this library (_prefered method_)
- - Using your Arduino IDE, open the Library Manager, search for "RTCtime by smz" and install. (*N.B. This methotd is not available yet: it will be available when the library will reach its first official release*)
+ - Using your Arduino IDE, open the Library Manager, search for "RTCtime by smz" and install.
+ 
+ (*N.B. This method is not available yet: it will be available when the library will reach its first official release*)
 
 ## Installing this library from GitHub (_alternative method_)
  - Create a directory named "RTCtime" in your Arduino\libraries folder.
@@ -22,4 +24,4 @@ Forked from the excelent "Rtc by Makuna" library (https://github.com/Makuna/Rtc)
  - Examples will soon be added, please bear with me...
 
 ## Donating
-If you like this library and you use it, please consider donating (_a "Donation" button will soon be added..._), but please __consider donating to the orignal devloper too__, as **he** did much of the work! 
+If you like this library and you use it, please consider donating, but please __consider donating to the orignal devloper too__, as **he** did much of the work! 
