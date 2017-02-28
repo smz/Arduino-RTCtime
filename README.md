@@ -2,7 +2,7 @@
 
 An Arduino Real Time Clock library.  
 
-This library makes using the DS1307 and DS3231 RTC module really easy and is compatible with the classic &lt;time.h&gt; datatypes and methods.
+This library makes using the DS1307 and DS3231 RTC modules really easy and is compatible with the classic &lt;time.h&gt; datatypes and methods.
 
 Forked from the excelent "Rtc by Makuna" library (https://github.com/Makuna/Rtc), this one uses different datatypes/classes for handling time. While the Makuna library uses the proprietary RtcDateTime class, this one uses the classic &lt;time.h&gt; datatypes/classes. There are also some minor differences with the names and types of a few methods. Extra features (_such as temperature reading, calibration, alarms and memory storage_) are available when supported by the module used.
 
