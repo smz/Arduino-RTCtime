@@ -97,7 +97,7 @@ public:
         _wire.write(Uint8ToBcd(now->tm_wday + 1));
         _wire.write(Uint8ToBcd(now->tm_mday));
         _wire.write(Uint8ToBcd(now->tm_mon + 1));
-        _wire.write(Uint8ToBcd(now->tm_year - 100);
+        _wire.write(Uint8ToBcd(now->tm_year - 100));
 
         _wire.endTransmission();
     }
