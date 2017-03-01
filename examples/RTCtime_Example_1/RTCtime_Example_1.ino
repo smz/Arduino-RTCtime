@@ -11,7 +11,7 @@
 // ------> V E R Y   I M P O R T A N T !  <------
 // Uncomment the #define here below if you use a DS3231 RTC
 // or comment it if you use a DS1307
-//#define DS3231
+// #define DS3231
 
 
 // ------> I M P O R T A N T !  <------
