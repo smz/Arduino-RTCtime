@@ -55,7 +55,18 @@ int StringToInt(const char* pString)
 }
 
 
-extern time_t CompileTime (const char* date, const char* time)
+// This function takes a 20 chars long textual (English) representation of a date-time value
+// of the kind "Feb 28 2017 00:38:05" and convert it to a standard time_t value
+// This can be useful to convert the concatenation of the __DATE__ and __TIME__
+// compilation date and time strings to a time_t value.
+//
+// Example:
+//
+//  #define COMPILE_DATE_TIME (__DATE__ " " __TIME__)
+//  time_t compiletime = str20ToTime(COMPILE_DATE_TIME);
+//
+// I'm not happy with this function name/implementation and it might change in the future...
+extern time_t str20ToTime(const char* date)
 {
   struct tm tm_time;
 
@@ -101,9 +112,9 @@ extern time_t CompileTime (const char* date, const char* time)
   tm_time.tm_year = year - 1900;
 
   // Get the time
-  tm_time.tm_hour = (int8_t) StringToInt(time);
-  tm_time.tm_min  = (int8_t) StringToInt(time + 3);
-  tm_time.tm_sec  = (int8_t) StringToInt(time + 6);
+  tm_time.tm_hour = (int8_t) StringToInt(date + 12);
+  tm_time.tm_min  = (int8_t) StringToInt(date + 15);
+  tm_time.tm_sec  = (int8_t) StringToInt(date + 18);
   tm_time.tm_wday = 0;
   tm_time.tm_isdst = 0;
 
