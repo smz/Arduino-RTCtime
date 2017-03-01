@@ -41,7 +41,7 @@
 #define MY_TIMEZONE 1   // I'm in Europe...
 #define MY_TIMEZONE_IN_SECONDS (MY_TIMEZONE * ONE_HOUR)
 
-  
+
 //===============================================================================================================//
 
 
@@ -85,7 +85,20 @@ unsigned long interval = 1000;
 
 // Support stuff for debug...
 #ifdef DEBUG
-  #define DUMP(x) Serial.print(#x);Serial.print(" = ");Serial.println(x);
+  #define DUMP(x)           \
+    Serial.print(#x);       \
+    Serial.print(F(" = ")); \
+    Serial.println(x);
+  #define DUMP_TM(x)  \
+    DUMP(x.tm_year);  \
+    DUMP(x.tm_mon);   \
+    DUMP(x.tm_mday);  \
+    DUMP(x.tm_hour);  \
+    DUMP(x.tm_min);   \
+    DUMP(x.tm_sec);   \
+    DUMP(x.tm_isdst); \
+    DUMP(x.tm_yday);  \
+    DUMP(x.tm_wday);
   unsigned long loops = 0;
 #endif
 
@@ -103,22 +116,28 @@ void setup() {
   Rtc.Begin();
   set_zone(MY_TIMEZONE_IN_SECONDS);
 
-  // Here we convert the __DATE__ and __TIME__ preprocessor macros to a "time_t value" 
+  // Here we convert the __DATE__ and __TIME__ preprocessor macros to a "time_t value"
   // and then to a "struct tm object" to initialize the RTC with it in case it is "older" than
   // the compile time (i.e: it was wrongly set. But your PC clock might be wrong too!)
   // or in case it is invalid.
   // This is *very* crude, it would be MUCH better to take the time from a reliable
   // source (GPS or NTP), or even set it "by hand", but -hey!-, this is just an example!!
-  // N.B.: We always set it when we are debugging...
+  // N.B.: We always set the RTC to the compile time when we are debugging.
   #define COMPILE_DATE_TIME (__DATE__ " " __TIME__)
-  time_t compiled_time = str20ToTime(COMPILE_DATE_TIME);  // str20ToTime is in RtcUtility.h
+  char* compile_date_time = COMPILE_DATE_TIME;
+  time_t compiled_time_t = str20ToTime(compile_date_time);  // str20ToTime converts a 20 chars date and time string to a time_t (like) value (See it in RtcUtility.h)
+  compiled_time_t += MY_TIMEZONE_IN_SECONDS;                // ... but we must correct for our Time Zone as str20ToTime() doesn't do that!
   struct tm compiled_time_tm;
-  localtime_r(&compiled_time, &compiled_time_tm);
+  gmtime_r(&compiled_time_t, &compiled_time_tm);            // We put our compile time into a "struct tm" object too...
 
 #ifdef DEBUG
-  DUMP(compiled_time);
-  char* compiled_time_string = ctime(&compiled_time);
+  DUMP(compile_date_time);
+  DUMP(compiled_time_t);
+  DUMP_TM(compiled_time_tm);
+  char* compiled_time_string = ctime(&compiled_time_t);
   DUMP(compiled_time_string);
+  time_t offset = mk_gmtime(gmtime(0));
+  DUMP(offset);
 #endif
 
   // Here we check the health of our RTC and in case we try to "fix it"
@@ -126,7 +145,7 @@ void setup() {
   //    1) first time you ran and the device wasn't running yet
   //    2) the battery on the device is low or even missing
 
-  
+
   // Check if the time is valid.
 #ifndef DEBUG
   if (!Rtc.IsDateTimeValid())
@@ -139,33 +158,29 @@ void setup() {
 #endif
     Rtc.SetTime(&compiled_time_tm);
   }
-  
+
   // Check if the RTC clock is running (Yes, it can be stopped, if you wish!)
   if (!Rtc.GetIsRunning())
   {
     Serial.println(F("WARNING: RTC was not actively running, starting it now."));
     Rtc.SetIsRunning(true);
   }
-  
-  // We finally get the time from the RTC into a time_t value (let's call it "now")
+
+  // We finally get the time from the RTC into a time_t value (let's call it "now"!)
   time_t now = Rtc.GetTime();
   #ifdef DEBUG
     DUMP(now);
-    char* now_string = ctime(&now);
-    DUMP(now_string);
-    DUMP(compiled_time);
   #endif
-  
-  // And, as stated above, we set it to the "Compile time" in case it is "older"
-  if (now < compiled_time)
+
+  // As stated above, we reset it to the "Compile time" in case it is "older"
+  if (now < compiled_time_t)
   {
     Serial.println(F("WARNING: RTC is older than compile time, setting RTC with compile time!"));
     Rtc.SetTime(&compiled_time_tm);
   }
-  
+
   #ifdef DS3231
-  // never assume the RTC was last configured by you, so
-  // just clear them to your needed state
+  // Reset the DS3231 RTC status in case it was wrongly configured
   Rtc.Enable32kHzPin(false);
   Rtc.SetSquareWavePin(DS3231SquareWavePin_ModeNone);
   #endif
@@ -201,39 +216,39 @@ void loop() {
     #endif
 
     // HERE we read the RTC! It was the time, wasn't it?? ;-)
-    if (Rtc.IsDateTimeValid())    // Check if the RTC is still reliable...
+    if (Rtc.IsDateTimeValid())      // Check if the RTC is still reliable...
     {
-                                     // Rtc.GetTime() returns the "time_t" time value:
-                                     // this is universal, absolute, UTC based, arithmetic time,
-      time_t now = Rtc.GetTime();    // counted as seconds since Jan 1, 2000 00:00:00.
-                                     // Unhappily the Arduino time.h libray does not takes into account "leap seconds"
-                                     // (See: https://en.wikipedia.org/wiki/Leap_second)
+                                    // Rtc.GetTime() returns the "time_t" time value:
+                                    // this is universal, absolute, UTC based, arithmetic time,
+      time_t now = Rtc.GetTime();   // counted as seconds since Jan 1, 2000 00:00:00.
+                                    // Unhappily the time.h libray does not takes into account "leap seconds"
+                                    // (See: https://en.wikipedia.org/wiki/Leap_second)
 
-      // We can build and print a standard ISO timestamp with our local time
+      // We can build and print a standard ISO timestamp with our *local* time
       struct tm local_tm;
-      localtime_r(&now, &local_tm);  // localtime_r() convert the (universal, UTC based) arithmetic system time to a "tm" object with local time
+      localtime_r(&now, &local_tm);  // localtime_r() convert the (universal, UTC based) arithmetic system time to a "struct tm" object with local time
       char local_timestamp[20];
       strcpy(local_timestamp, isotime(&local_tm));  // We use the standard isotime() function to build the ISO timestamp
-      Serial.print("Local timestamp: ");
+      Serial.print(F("Local timestamp: "));
       Serial.print(local_timestamp);
 
-      // ... same thing with our with our UTC time
+      // ... same thing but with UTC time
       struct tm utc_tm;
-      gmtime_r(&now, &utc_tm);       // but using the gmtime_r() function to convert the arithmetic system time to a "tm" object 
+      gmtime_r(&now, &utc_tm);       // but using the gmtime_r() function to convert the arithmetic system time to a "struct tm" object
       char utc_timestamp[20];
       strcpy(utc_timestamp, isotime(&utc_tm));
-      Serial.print(" - UTC timestamp: ");
+      Serial.print(F(" - UTC timestamp: "));
       Serial.print(utc_timestamp);
       Serial.println("");
 
       // We can also use the ctime() and asctime() functions for formatting our time:
-      Serial.print("Local time: ");
+      Serial.print(F("Local time: "));
       Serial.print(ctime(&now));       // ctime() simply uses the time_t arithmetic time type and takes into account our Time Zone
-      Serial.print(" - UTC time: ");
-      Serial.print(asctime(&utc_tm));  // While asctime uses the struct tm object (whatever it contains, local or UTC, depending on how it was created)
+      Serial.print(F(" - UTC time: "));
+      Serial.print(asctime(&utc_tm));  // While asctime uses the "struct tm" object and *does not* takes into account our Time Zone
       Serial.println("");
-      
-      // If we have a DS3231 we can get the temperature too...
+
+      // If we have a DS3231 we can read the temperature too...
       #ifdef DS3231
         float temperature = Rtc.GetTemperature();
         Serial.print(F("Temperature: "));
@@ -242,7 +257,7 @@ void loop() {
         Serial.print(temperature * 1.8 + 32);
         Serial.println(F("F)"));
       #endif
-      
+
       Serial.println("");
     }
     else
