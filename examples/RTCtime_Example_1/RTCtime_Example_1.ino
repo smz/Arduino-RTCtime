@@ -248,6 +248,23 @@ void loop() {
       Serial.println(ux_time_t);
 
 
+      // We can do the same using a different form of GetTime() and GetLocalTime() 
+      Serial.println(F("Same as above, but done in a different way:"));
+
+      // We can build and print a standard ISO timestamp with our *local* time
+      Rtc.GetLocalTime(&local_tm);                  // GetLocalTime() compiles a "struct tm" pointer with local time
+      strcpy(local_timestamp, isotime(&local_tm));  // We use the standard isotime() function to build the ISO timestamp
+      Serial.print(F("Local timestamp: "));
+      Serial.print(local_timestamp);
+
+      // ... same thing but with UTC time
+      Rtc.GetTime(&utc_tm);                         // GetTime(), when passed a "struct tm" pointer, compiles it with UTC time
+      strcpy(utc_timestamp, isotime(&utc_tm));
+      Serial.print(F(" - UTC timestamp: "));
+      Serial.print(utc_timestamp);
+      Serial.println("");
+ 
+
       // If we have a DS3231 we can read the temperature too...
       #ifdef DS3231
         float temperature = Rtc.GetTemperature();
