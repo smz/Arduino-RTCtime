@@ -134,6 +134,18 @@ public:
     {
         setReg(DS1307_REG_CONTROL, pinMode);
     }
+    void GetTime(struct tm *utc_tm)
+    {
+      time_t now = GetTime();
+      gmtime_r(&now, utc_tm);
+    }
+
+
+    void GetLocalTime(struct tm *local_tm)
+    {
+      time_t now = GetTime();
+      localtime_r(&now, local_tm);
+    }
 
 
     void SetMemory(uint8_t memoryAddress, uint8_t value)
