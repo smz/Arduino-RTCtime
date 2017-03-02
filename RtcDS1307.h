@@ -101,6 +101,12 @@ public:
 
         _wire.endTransmission();
     }
+    void SetTime(time_t *now)
+    {
+      struct tm now_tm;
+      gmtime_r(now, &now_tm);
+      SetTime(&now_tm);
+    }
 
 
     time_t GetTime()
@@ -120,7 +126,7 @@ public:
         now.tm_mon = BcdToUint8(_wire.read());
         now.tm_year = BcdToUint8(_wire.read()) + 100;
 
-        return mktime(&now);
+        return mk_gmtime(&now);
     }
 
 

@@ -118,9 +118,9 @@ public:
 protected:
     DS3231AlarmOneControl _flags;
 
-	uint8_t _dayOf;
-	uint8_t _hour;
-	uint8_t _minute;
+    uint8_t _dayOf;
+    uint8_t _hour;
+    uint8_t _minute;
     uint8_t _second;
 };
 
@@ -291,6 +291,12 @@ public:
 
         _wire.endTransmission();
     }
+    void SetTime(time_t *now)
+    {
+      struct tm now_tm;
+      gmtime_r(now, &now_tm);
+      SetTime(&now_tm);
+    }
 
 
     time_t GetTime()
@@ -320,7 +326,7 @@ public:
 
       now.tm_isdst = 0;
 
-      return mktime(&now);
+      return mk_gmtime(&now);
     }
 
 
