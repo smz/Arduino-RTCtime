@@ -248,6 +248,13 @@ void loop() {
       Serial.print(asctime(&utc_tm));  // While asctime uses the "struct tm" object and *does not* takes into account our Time Zone
       Serial.println("");
 
+      // ... or we can print the time as a standard Unix timestamp
+      // You can check it using the "Unix Time Conversion" tool at http://www.onlineconversion.com/unix_time.htm
+      signed long ux_time_t = now + UNIX_OFFSET;
+      Serial.print(F("Unix timestamp: "));
+      Serial.println(ux_time_t);
+
+
       // If we have a DS3231 we can read the temperature too...
       #ifdef DS3231
         float temperature = Rtc.GetTemperature();
