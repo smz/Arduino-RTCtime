@@ -117,7 +117,7 @@ void setup() {
   set_zone(MY_TIMEZONE_IN_SECONDS);
 
   // Here we convert the __DATE__ and __TIME__ preprocessor macros to a "time_t value"
-  // and then to a "struct tm object" to initialize the RTC with it in case it is "older" than
+  // to initialize the RTC with it in case it is "older" than
   // the compile time (i.e: it was wrongly set. But your PC clock might be wrong too!)
   // or in case it is invalid.
   // This is *very* crude, it would be MUCH better to take the time from a reliable
@@ -125,22 +125,10 @@ void setup() {
   // N.B.: We always set the RTC to the compile time when we are debugging.
   #define COMPILE_DATE_TIME (__DATE__ " " __TIME__)
   char* compile_date_time = COMPILE_DATE_TIME;
-  time_t compiled_time_t = str20ToTime(compile_date_time);  // str20ToTime converts a 20 chars date and time string to a time_t (like) value (See it in RtcUtility.h)
-  compiled_time_t += MY_TIMEZONE_IN_SECONDS;                // ... but we must correct for our Time Zone as str20ToTime() doesn't do that!
-  struct tm compiled_time_tm;
-  gmtime_r(&compiled_time_t, &compiled_time_tm);            // We put our compile time into a "struct tm" object too...
+  time_t compiled_time_t = str20ToTime(compile_date_time);  // str20ToTime converts a 20 chars date and time string to a time_t value (See it in RtcUtility.h)
 
-#ifdef DEBUG
-  DUMP(compile_date_time);
-  DUMP(compiled_time_t);
-  DUMP_TM(compiled_time_tm);
-  char* compiled_time_string = ctime(&compiled_time_t);
-  DUMP(compiled_time_string);
-  time_t offset = mk_gmtime(gmtime(0));
-  DUMP(offset);
-#endif
 
-  // Here we check the health of our RTC and in case we try to "fix it"
+  // Now we check the health of our RTC and in case we try to "fix it"
   // Common causes for it being invalid are:
   //    1) first time you ran and the device wasn't running yet
   //    2) the battery on the device is low or even missing
@@ -154,9 +142,9 @@ void setup() {
 #ifndef DEBUG
     Serial.println(F("WARNING: RTC invalid time, setting RTC with compile time!"));
 #else
-    Serial.println(F("DEBUG mode: setting RTC with compile time!"));
+    Serial.println(F("DEBUG mode: ALWAYS setting RTC with compile time!"));
 #endif
-    Rtc.SetTime(&compiled_time_tm);
+    Rtc.SetTime(&compiled_time_t);
   }
 
   // Check if the RTC clock is running (Yes, it can be stopped, if you wish!)
@@ -176,7 +164,7 @@ void setup() {
   if (now < compiled_time_t)
   {
     Serial.println(F("WARNING: RTC is older than compile time, setting RTC with compile time!"));
-    Rtc.SetTime(&compiled_time_tm);
+    Rtc.SetTime(&compiled_time_t);
   }
 
   #ifdef DS3231
@@ -248,7 +236,12 @@ void loop() {
       Serial.print(asctime(&utc_tm));  // While asctime uses the "struct tm" object and *does not* takes into account our Time Zone
       Serial.println("");
 
-      // ... or we can print the time as a standard Unix timestamp
+      // ... or we can print the time as an "Arduino timestamp" (Y2K based, i.e. epoch ("base time") = 2000-01-01T00:00:00Z)
+      // You can check it using the "Unix Time Conversion" tool at http://www.onlineconversion.com/unix_time.htm
+      Serial.print(F("Arduino timestamp: "));
+      Serial.println(now);
+
+      // ... or we can print the time as a standard Unix timestamp (i.e. epoch ("base time") = 1970-01-01T00:00:00Z)
       // You can check it using the "Unix Time Conversion" tool at http://www.onlineconversion.com/unix_time.htm
       signed long ux_time_t = now + UNIX_OFFSET;
       Serial.print(F("Unix timestamp: "));
