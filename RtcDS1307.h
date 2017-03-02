@@ -128,12 +128,6 @@ public:
 
         return mk_gmtime(&now);
     }
-
-
-    void SetSquareWavePin(DS1307SquareWaveOut pinMode)
-    {
-        setReg(DS1307_REG_CONTROL, pinMode);
-    }
     void GetTime(struct tm *utc_tm)
     {
       time_t now = GetTime();
@@ -148,6 +142,10 @@ public:
     }
 
 
+    void SetSquareWavePin(DS1307SquareWaveOut pinMode)
+    {
+        setReg(DS1307_REG_CONTROL, pinMode);
+    }
     void SetMemory(uint8_t memoryAddress, uint8_t value)
     {
         uint8_t address = memoryAddress + DS1307_REG_RAMSTART;
