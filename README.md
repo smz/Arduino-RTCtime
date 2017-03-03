@@ -9,19 +9,19 @@ Forked from the excelent "Rtc by Makuna" library (https://github.com/Makuna/Rtc)
  - Supports esp8266 (*hopefuly, untested*)
  - Supports SoftwareWire library (*hopefuly, untested*)
 
-## Installing this library (_prefered method_)
- - Using your Arduino IDE, open the Library Manager, search for "RTCtime by smz" and install.
- 
- *N.B.: This method is not available yet: it will be available when the library will reach its first official release*
+## Install this library using the Arduino IDE (_prefered method_)
+ - ~~Using your Arduino IDE, open the Library Manager, search for "RTCtime by smz" and install.~~ *
 
-## Installing this library from GitHub (_alternative method_)
+This method is not available yet: it will be available when the library will reach its first official release
+
+## Install this library from GitHub (_alternative method_)
  - Create a directory named "RTCtime" in your Arduino\libraries folder.
  - Clone this project into that folder.  
  - It should now be available in your Arduino IDE "Include Library" list.
 
 ## Examples
 
- - Examples will soon be added, please bear with me...
+ - There are a couple of commented examples in the `./examples` folder. You might try them and use them as a reference, until I write a more formal API documentation
 
 ## Donating
 If you like this library and you use it, please consider donating, but please __consider donating to the orignal devloper too__, as **he** did much of the work! 
