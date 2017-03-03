@@ -15,8 +15,9 @@
 
 
 // ------> I M P O R T A N T !  <------
-// DEBUG - Uncomment  if you want to have more information about what's going on...
-// #define DEBUG
+// DEBUG - Uncomment/comment the define here below if you want to have more or less information about what's going on.
+// Beware that when DEBUG is defined the RTC is reset with the compile time at every run.
+#define DEBUG
 
 
 // ------> I M P O R T A N T !  <------

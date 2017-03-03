@@ -64,8 +64,8 @@
 
 // Declared volatile so interrupt can safely modify them
 // and other code can safely read and modify them
-volatile unsigned long interuptCount = 0;
-volatile bool interuptFlag = false;
+volatile unsigned long interruptCount = 0;
+volatile bool interruptFlag = false;
 unsigned long loops = 0;
 
 
@@ -192,7 +192,7 @@ void setup() {
   Rtc.LatchAlarmsTriggeredFlags();
 
   // Associate the interrupt service routine to a FALLING edge on the board pin connected to the DS3231 SQW pin
-  attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), InteruptServiceRoutine, FALLING);
+  attachInterrupt(digitalPinToInterrupt(INTERRUPT_PIN), InterruptServiceRoutine, FALLING);
 
 
   #ifdef DEBUG
@@ -205,14 +205,14 @@ void setup() {
 
 
 
-void InteruptServiceRoutine()
+void InterruptServiceRoutine()
 {
-  // Since this interupted any other running code, so we keep the code here at minimum
+  // Since this interrupted any other running code, so we keep the code here at minimum
   // and especially avoid any communications calls within this routine
   // We just set a flag that will be checked later in the main loop (where real action will take place)
   // and increment a counter to be displayed there
-  interuptCount++;
-  interuptFlag = true;
+  interruptCount++;
+  interruptFlag = true;
 }
 
 
@@ -221,12 +221,12 @@ void InteruptServiceRoutine()
 void loop() {
   loops++;
 
-  if (interuptFlag)  // Check if InteruptServiceRoutine() has set the flag
+  if (interruptFlag)  // Check if InterruptServiceRoutine() has set the flag
   {
     // Yes, An interrupt has occoured!
     
      // Reset the flag
-    interuptFlag = false;
+    interruptFlag = false;
     
     // Get the DS3231 Alarm Flag
     // then allows for others to trigger again
@@ -248,7 +248,7 @@ void loop() {
       // We print how many interrupts (Alarms) have happened so far...
       // And how many loops since the previous interrupt.
       Serial.print(F(" - Interrupt: "));
-      Serial.print(interuptCount);
+      Serial.print(interruptCount);
       Serial.print(F(" - Loops: "));
       Serial.println(loops);
       }
