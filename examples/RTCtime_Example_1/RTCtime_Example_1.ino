@@ -242,14 +242,22 @@ void loop() {
       Serial.print(F("Arduino timestamp: "));
       Serial.println(now);
 
-      // ... or we can print the time as a standard Unix timestamp (i.e. epoch ("base time") = 1970-01-01T00:00:00Z)
-      // You can check it using the "Unix Time Conversion" tool at http://www.onlineconversion.com/unix_time.htm
-      signed long ux_time_t = now + UNIX_OFFSET;
-      Serial.print(F("Unix timestamp: "));
+
+      // For testing, I'm now setting the time using the Unix Epoch based version of SetTime(), and later we will check if we are good...
+      // Unix time epoch ("base time") is 1970-01-01T00:00:00Z instead of Arduino usual epoch 2000-01-01T00:00:00Z
+      // You can check Unix time values using the "Unix Time Conversion" tool at http://www.onlineconversion.com/unix_time.htm
+      Serial.print(F("Setting time using SetTimeUX() and Unix Epoch based value "));
+      time_t ux_now = now + UNIX_OFFSET;
+      Serial.println(ux_now);
+      Rtc.SetTimeUX(&ux_now);
+
+      // Now we use the GetTimeUX(), Unix Epoch based version of GetTime(), to get an Unix time value
+      time_t ux_time_t = Rtc.GetTimeUX();
+      Serial.print(F("Unix timestamp from GetTimeUX(): "));
       Serial.println(ux_time_t);
 
 
-      // We can do the same using a different form of GetTime() and GetLocalTime() 
+      // We can do the same using a different form of GetTime() and GetLocalTime()
       Serial.println(F("Same as above, but done in a different way:"));
 
       // We can build and print a standard ISO timestamp with our *local* time
@@ -264,7 +272,7 @@ void loop() {
       Serial.print(F(" - UTC timestamp: "));
       Serial.print(utc_timestamp);
       Serial.println("");
- 
+
 
       // If we have a DS3231 we can read the temperature too...
       #ifdef DS3231

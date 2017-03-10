@@ -299,6 +299,17 @@ public:
     }
 
 
+    void SetTimeUX(time_t *UXnow)
+    {
+      time_t now = *UXnow - UNIX_OFFSET;
+      SetTime(&now);
+    }
+    void SetTimeUX(time_t UXnow)
+    {
+      SetTimeUX(&UXnow);
+    }
+
+
     time_t GetTime()
     {
 
@@ -332,6 +343,12 @@ public:
     {
       time_t now = GetTime();
       gmtime_r(&now, utc_tm);
+    }
+
+
+    time_t GetTimeUX()
+    {
+      return (GetTime() + UNIX_OFFSET);
     }
 
 
