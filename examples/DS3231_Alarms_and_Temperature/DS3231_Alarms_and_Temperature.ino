@@ -176,7 +176,7 @@ void setup() {
   Rtc.Enable32kHzPin(false);
 
   // Set the DS3231 SQW pin to be triggered whenever one of the two alarms expires
-  Rtc.SetSquareWavePin(DS3231SquareWavePin_ModeAlarmBoth); 
+  Rtc.SetSquareWavePin(DS3231SquareWavePin_ModeAlarmBoth);
 
   // Alarm 1 can be triggered at most once per second:
   // we will use it to print a timestamp every second
@@ -224,10 +224,10 @@ void loop() {
   if (interruptFlag)  // Check if InterruptServiceRoutine() has set the flag
   {
     // Yes, An interrupt has occoured!
-    
+
      // Reset the flag
     interruptFlag = false;
-    
+
     // Get the DS3231 Alarm Flag
     // then allows for others to trigger again
     DS3231AlarmFlag alarm_flag = Rtc.LatchAlarmsTriggeredFlags();
