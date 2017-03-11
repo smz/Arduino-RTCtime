@@ -20,7 +20,7 @@ Extra features (_such as temperature reading, calibration, alarms and memory sto
 
 - When using the Std C time library, you are supposed to have your RTC module running as UTC, and then use the Std C `set_zone()` function to set your current timezone. Same thing with DST and the `set_dst()` function.
 
-- Two methods have been added, `SetTimeUX()` and `GetTimeUX()`, that uses the Unix epoch, `1970-01-01T00:00:00Z`, instead of the AVR one. Those two functions potentially makes this library useful when using Michael Margolis/Paul Stoffregen's [TimeLib, a.k.a. Time](https://github.com/PaulStoffregen/Time) library that do not follow the Std C API but uses the Unix epoch (_untested by me at this time, use at your own risk..._). **Do not use the** `UX` **functions if you use the Std C time library**.
+- Two methods have been added, `SetTimeUX()` and `GetTimeUX()`, that uses the Unix epoch, `1970-01-01T00:00:00Z`, instead of the AVR one. Those two functions potentially makes this library useful when using Michael Margolis/Paul Stoffregen's [TimeLib, a.k.a. Time](https://github.com/PaulStoffregen/Time) library that doesn't follow the Std C API and uses the Unix epoch (_untested by me at this time, use at your own risk..._). **Do not use the** `UX` **functions if you use the Std C time library**.
 
 ## Install this library using the Arduino IDE (_prefered method_)
  - Using your Arduino IDE, open the Library Manager, search for "RTCtime by smz" and install.
