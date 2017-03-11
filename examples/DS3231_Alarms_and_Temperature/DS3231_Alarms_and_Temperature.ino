@@ -71,7 +71,9 @@ unsigned long loops = 0;
 
 // We NEED the standard C time library...
 #include <time.h>
-#include "RtcUtility.h"
+
+// This contains a function to convert the __DATE__ and __TIME__ macros to a time_t value
+#include "RTCtimeUtils.h"
 
 // Here where we instantiate our "Rtc" object
 // In your project you can get rid of all this stuff, if you want, and just #include and initialize what you need
@@ -90,25 +92,6 @@ unsigned long loops = 0;
 // Scheduler:
 // We will have our loop() "freerunning" and we will print out our time only when an alarm is triggered.
 // Having the time printed will thus be a demonstartion of alarms working.
-
-
-// Support stuff for debug...
-#ifdef DEBUG
-  #define DUMP(x)           \
-    Serial.print(#x);       \
-    Serial.print(F(" = ")); \
-    Serial.println(x);
-  #define DUMP_TM(x)  \
-    DUMP(x.tm_year);  \
-    DUMP(x.tm_mon);   \
-    DUMP(x.tm_mday);  \
-    DUMP(x.tm_hour);  \
-    DUMP(x.tm_min);   \
-    DUMP(x.tm_sec);   \
-    DUMP(x.tm_isdst); \
-    DUMP(x.tm_yday);  \
-    DUMP(x.tm_wday);
-#endif
 
 
 // SETUP

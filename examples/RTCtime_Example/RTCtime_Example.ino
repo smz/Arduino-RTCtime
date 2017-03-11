@@ -11,7 +11,7 @@
 // ------> V E R Y   I M P O R T A N T !  <------
 // Uncomment the #define here below if you use a DS3231 RTC
 // or comment it if you use a DS1307
-   #define DS3231
+// #define DS3231
 
 
 // ------> I M P O R T A N T !  <------
@@ -51,7 +51,7 @@
 #include <time.h>
 
 // This contains a function to convert the __DATE__ and __TIME__ macros to a time_t value
-#include "RtcUtility.h"
+#include "RTCtimeUtils.h"
 
 // Here where we instantiate our "Rtc" object
 // In your project you can get rid of all this stuff, if you want, and just #include and initialize what you need
@@ -84,26 +84,6 @@
 // 100 milliseconds *seems* to work, but 1000 milliseconds is fair enough (after all the RTC gives the time with a 1 second precision...)
 unsigned long prev_millis = 0;
 unsigned long interval = 1000;
-
-
-// Support stuff for debug...
-#ifdef DEBUG
-  #define DUMP(x)           \
-    Serial.print(#x);       \
-    Serial.print(F(" = ")); \
-    Serial.println(x);
-  #define DUMP_TM(x)  \
-    DUMP(x.tm_year);  \
-    DUMP(x.tm_mon);   \
-    DUMP(x.tm_mday);  \
-    DUMP(x.tm_hour);  \
-    DUMP(x.tm_min);   \
-    DUMP(x.tm_sec);   \
-    DUMP(x.tm_isdst); \
-    DUMP(x.tm_yday);  \
-    DUMP(x.tm_wday);
-  unsigned long loops = 0;
-#endif
 
 
 // SETUP
@@ -159,9 +139,6 @@ void setup() {
 
   // We finally get the time from the RTC into a time_t value (let's call it "now"!)
   time_t now = Rtc.GetTime();
-  #ifdef DEBUG
-    DUMP(now);
-  #endif
 
   // As stated above, we reset it to the "Compile time" in case it is "older"
   if (now < compiled_time_t)
@@ -188,9 +165,6 @@ void setup() {
 
 // Main loop
 void loop() {
-  #ifdef DEBUG
-    loops++;
-  #endif
 
   // Here we check our RTC every "interval" milliseconds
   // We don't use delay() as we want our loop freerunning
@@ -201,11 +175,6 @@ void loop() {
   {
     prev_millis = prev_millis + interval;
 
-    #ifdef DEBUG
-      DUMP(loops);
-      loops = 0;
-    #endif
-
     // HERE we read the RTC! It was the time, wasn't it?? ;-)
     if (Rtc.IsDateTimeValid())      // Check if the RTC is still reliable...
     {
@@ -214,6 +183,13 @@ void loop() {
       time_t now = Rtc.GetTime();   // counted as seconds since Jan 1, 2000 00:00:00.
                                     // Unhappily the time.h libray does not takes into account "leap seconds"
                                     // (See: https://en.wikipedia.org/wiki/Leap_second)
+
+      // We can print the time as an "Arduino timestamp" (Y2K based, i.e. epoch ("base time") = 2000-01-01T00:00:00Z)
+      // You can check it using the "Unix Time Conversion" tool at http://www.onlineconversion.com/unix_time.htm
+      Serial.print(F("Arduino time (Y2K based):  "));
+      Serial.println(now);
+      Serial.print(F("Unix time (1970 based):   "));
+      Serial.println(now + UNIX_OFFSET);
 
       // We can build and print a standard ISO timestamp with our *local* time
       struct tm local_tm;
@@ -238,25 +214,6 @@ void loop() {
       Serial.print(F(" - UTC time: "));
       Serial.print(asctime(&utc_tm));  // While asctime uses the "struct tm" object and *does not* takes into account our Time Zone
       Serial.println("");
-
-      // ... or we can print the time as an "Arduino timestamp" (Y2K based, i.e. epoch ("base time") = 2000-01-01T00:00:00Z)
-      // You can check it using the "Unix Time Conversion" tool at http://www.onlineconversion.com/unix_time.htm
-      Serial.print(F("Arduino timestamp: "));
-      Serial.println(now);
-
-
-      // For testing, I'm now setting the time using the Unix Epoch based version of SetTime(), and later we will check if we are good...
-      // Unix time epoch ("base time") is 1970-01-01T00:00:00Z instead of Arduino usual epoch 2000-01-01T00:00:00Z
-      // You can check Unix time values using the "Unix Time Conversion" tool at http://www.onlineconversion.com/unix_time.htm
-      Serial.print(F("Setting time using SetTimeUX() and Unix Epoch based value "));
-      time_t ux_now = now + UNIX_OFFSET;
-      Serial.println(ux_now);
-      Rtc.SetTimeUX(&ux_now);
-
-      // Now we use the GetTimeUX(), Unix Epoch based version of GetTime(), to get an Unix time value
-      time_t ux_time_t = Rtc.GetTimeUX();
-      Serial.print(F("Unix timestamp from GetTimeUX(): "));
-      Serial.println(ux_time_t);
 
 
       // We can do the same using a different form of GetTime() and GetLocalTime()
