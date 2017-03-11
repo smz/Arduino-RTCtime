@@ -7,7 +7,7 @@
     "type": "git",
     "url": "https://github.com/smz/RTCtime.git"
   },
-  "version": "0.0.7",
+  "version": "0.0.8",
   "frameworks": "arduino",
   "platforms": "*"
 }

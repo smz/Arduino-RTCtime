@@ -71,7 +71,7 @@ unsigned long loops = 0;
 
 // We NEED the standard C time library...
 #include <time.h>
-
+#include "RtcUtility.h"
 
 // Here where we instantiate our "Rtc" object
 // In your project you can get rid of all this stuff, if you want, and just #include and initialize what you need

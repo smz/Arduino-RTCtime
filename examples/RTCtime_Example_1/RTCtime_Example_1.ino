@@ -11,7 +11,7 @@
 // ------> V E R Y   I M P O R T A N T !  <------
 // Uncomment the #define here below if you use a DS3231 RTC
 // or comment it if you use a DS1307
-// #define DS3231
+   #define DS3231
 
 
 // ------> I M P O R T A N T !  <------
@@ -31,7 +31,7 @@
 // ------> I M P O R T A N T !  <------
 // Uncomment the #define here below if you want to use
 // the SoftwareWire library (... and remember to install it!)
-// #define RTC_SOFTWARE_WIRE
+ #define RTC_SOFTWARE_WIRE
 
 
 // ------> I M P O R T A N T !  <------
@@ -50,6 +50,8 @@
 // We NEED the standard C time library...
 #include <time.h>
 
+// This contains a function to convert the __DATE__ and __TIME__ macros to a time_t value
+#include "RtcUtility.h"
 
 // Here where we instantiate our "Rtc" object
 // In your project you can get rid of all this stuff, if you want, and just #include and initialize what you need
