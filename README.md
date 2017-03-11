@@ -11,7 +11,7 @@ Forked from the excelent "Rtc by Makuna" library (https://github.com/Makuna/Rtc)
 
 ## Please note:
 - This is **not a library of time functions**.
-- This library is for **setting/getting time from hardware RTC clocks** (_and some extra stuff..._) in ways that are consistent with the Std C time library and the epoch defined in its AVR implementation (`2000-01-01T00:00:00Z`)
+- This library is for **setting/getting time from hardware RTC clocks** (_and some extra stuff..._) in ways that are consistent with the Std C time library and the epoch defined in its AVR implementation, `2000-01-01T00:00:00Z`.
 - Time functions are already defined in the AVR Std C library and you can access them using `#include <time.h>`. This is true for the Arduino IDE since version 1.6.10, and thus this library will be useless with prior releases.
 - When using the Std C time library, you are supposed to have your RTC clock running as UTC, and then use the Std C `set_zone()` function to set your current timezone. Same thing with DST and the `set_dst()` function.
 - Two functions, `SetTimeUX()` and `GetTimeUX()` that uses the Unix epoch, `1970-01-01T00:00:00Z`, instead of the AVR one, have been added. Those two functions potentially makes this library useful when using Michael Margolis/Paul Stoffregen's [TimeLib, a.k.a. Time library](https://github.com/PaulStoffregen/Time) that do not follow the Std C API but uses the Unix epoch (_untested by me, at this time, use at your own risk..._). **Do not use the** `UX` **functions if you use the Std C time library**.
