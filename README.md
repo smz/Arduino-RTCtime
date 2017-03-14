@@ -1,6 +1,6 @@
-# RTCtime by smz
+# RTCtime
 
-An Arduino Real Time Clock library. 
+**An Arduino Real Time Clock library.**
 
 This library makes using modules based on the DS1307 and DS3231 RTC really easy. It is compatible with and is meant to leverage the standard C time library `<time.h>` API (datatypes and functions) as defined in [ISO/IEC 9899 (C90)](http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1124.pdf) and implemented in the AVR Std C runtime libray since version 2.0.0 (_available in the Arduino IDE since version 1.6.10_).
 
