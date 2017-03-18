@@ -9,8 +9,7 @@
 
 
 // ------> V E R Y   I M P O R T A N T !  <------
-// Uncomment the #define here below if you use a DS3231 RTC
-// or comment it if you use a DS1307
+// Uncomment the #define here below if you use a DS3231 RTC or comment it if you use a DS1307
 // #define DS3231
 
 
@@ -22,16 +21,16 @@
 
 // ------> I M P O R T A N T !  <------
 // Adjust SERIAL_SPEED to your needs:
-// The default is 9600, but you probably can increase it in your IDE
-// and set it here accordingly
+// The default is 9600, but you probably can increase it in your IDE and set it here accordingly
 #define SERIAL_SPEED 9600
 
 
 
 // ------> I M P O R T A N T !  <------
-// Uncomment the #define here below if you want to use
-// the SoftwareWire library (... and remember to install it!)
- #define RTC_SOFTWARE_WIRE
+// Uncomment the #define here below if you want to use the SoftwareWire library (... and remember to install it!)
+// #define RTC_SOFTWARE_WIRE
+#define SOFTWARE_WIRE_SDA SDA  // Or whatever other pin you use
+#define SOFTWARE_WIRE_SCL SCL  // Or whatever other pin you use
 
 
 // ------> I M P O R T A N T !  <------
@@ -46,37 +45,31 @@
 //===============================================================================================================//
 
 
-
 // We NEED the standard C time library...
 #include <time.h>
 
 // This contains a function to convert the __DATE__ and __TIME__ macros to a time_t value
 #include "RTCtimeUtils.h"
 
-// Here where we instantiate our "Rtc" object
-// In your project you can get rid of all this stuff, if you want, and just #include and initialize what you need
-#ifndef RTC_SOFTWARE_WIRE
-  #include <Wire.h>
-  #ifdef DS3231
-    #include <RtcDS3231.h>
-    RtcDS3231<TwoWire> Rtc(Wire);
-  #else
-    #include <RtcDS1307.h>
-    RtcDS1307<TwoWire> Rtc(Wire);
-  #endif
-#else
+// Define which TWI/I2C API is used
+#ifdef RTC_SOFTWARE_WIRE
   #include <SoftwareWire.h>
-  #ifdef DS3231
-    #include <RtcDS3231.h>
-    SoftwareWire myWire(SDA, SCL);
-    RtcDS3231<SoftwareWire> Rtc(myWire);
-  #else
-    #include <RtcDS1307.h>
-    SoftwareWire myWire(SDA, SCL);
-    RtcDS1307<SoftwareWire> Rtc(myWire);
-  #endif
+  #define myWire SoftwareWire
+  myWire I2C(SOFTWARE_WIRE_SDA, SOFTWARE_WIRE_SCL);
+#else
+  #include <Wire.h>
+  #define myWire TwoWire
+  #define I2C Wire
 #endif
 
+// Here where we instantiate our "Rtc" object
+#ifdef DS3231
+  #include <RtcDS3231.h>
+  RtcDS3231<myWire> Rtc(I2C);
+#else
+  #include <RtcDS1307.h>
+  RtcDS1307<myWire> Rtc(I2C);
+#endif
 
 // Scheduler:
 // We will use this in the loop() to read our RTC every so much (interval) milliseconds *without using a delay()*
@@ -191,47 +184,42 @@ void loop() {
       Serial.print(F("Unix time (1970 based):   "));
       Serial.println(now + UNIX_OFFSET);
 
-      // We can build and print a standard ISO timestamp with our *local* time
+      // We can use the ctime() and asctime() functions for formatting our time:
+      struct tm utc_tm;
+      Serial.print(F("UTC time: "));
+      Serial.print(asctime(&utc_tm));  // While asctime uses the "struct tm" object and *does not* takes into account our Time Zone
+      Serial.print(F(" - Local time: "));
+      Serial.println(ctime(&now));       // ctime() simply uses the time_t arithmetic time type and takes into account our Time Zone
+
+      // We can build and print a standard ISO timestamp with *UTC* time
+      gmtime_r(&now, &utc_tm);       // but using the gmtime_r() function to convert the arithmetic system time to a "struct tm" object
+      char utc_timestamp[20];
+      strcpy(utc_timestamp, isotime(&utc_tm));
+      Serial.print(F("UTC timestamp: "));
+      Serial.print(utc_timestamp);
+
+      // ... same thing but with *local* time
       struct tm local_tm;
       localtime_r(&now, &local_tm);  // localtime_r() convert the (universal, UTC based) arithmetic system time to a "struct tm" object with local time
       char local_timestamp[20];
       strcpy(local_timestamp, isotime(&local_tm));  // We use the standard isotime() function to build the ISO timestamp
-      Serial.print(F("Local timestamp: "));
-      Serial.print(local_timestamp);
-
-      // ... same thing but with UTC time
-      struct tm utc_tm;
-      gmtime_r(&now, &utc_tm);       // but using the gmtime_r() function to convert the arithmetic system time to a "struct tm" object
-      char utc_timestamp[20];
-      strcpy(utc_timestamp, isotime(&utc_tm));
-      Serial.print(F(" - UTC timestamp: "));
-      Serial.print(utc_timestamp);
-      Serial.println("");
-
-      // We can also use the ctime() and asctime() functions for formatting our time:
-      Serial.print(F("Local time: "));
-      Serial.print(ctime(&now));       // ctime() simply uses the time_t arithmetic time type and takes into account our Time Zone
-      Serial.print(F(" - UTC time: "));
-      Serial.print(asctime(&utc_tm));  // While asctime uses the "struct tm" object and *does not* takes into account our Time Zone
-      Serial.println("");
-
+      Serial.print(F(" - Local timestamp: "));
+      Serial.println(local_timestamp);
 
       // We can do the same using a different form of GetTime() and GetLocalTime()
       Serial.println(F("Same as above, but done in a different way:"));
 
-      // We can build and print a standard ISO timestamp with our *local* time
-      Rtc.GetLocalTime(&local_tm);                  // GetLocalTime() compiles a "struct tm" pointer with local time
-      strcpy(local_timestamp, isotime(&local_tm));  // We use the standard isotime() function to build the ISO timestamp
-      Serial.print(F("Local timestamp: "));
-      Serial.print(local_timestamp);
-
-      // ... same thing but with UTC time
+      // We can build and print a standard ISO timestamp with *UTC* time
       Rtc.GetTime(&utc_tm);                         // GetTime(), when passed a "struct tm" pointer, compiles it with UTC time
       strcpy(utc_timestamp, isotime(&utc_tm));
-      Serial.print(F(" - UTC timestamp: "));
+      Serial.print(F("UTC timestamp: "));
       Serial.print(utc_timestamp);
-      Serial.println("");
 
+      // ... same thing but with *local* time
+      Rtc.GetLocalTime(&local_tm);                  // GetLocalTime() compiles a "struct tm" pointer with local time
+      strcpy(local_timestamp, isotime(&local_tm));  // We use the standard isotime() function to build the ISO timestamp
+      Serial.print(F(" - Local timestamp: "));
+      Serial.println(local_timestamp);
 
       // If we have a DS3231 we can read the temperature too...
       #ifdef DS3231

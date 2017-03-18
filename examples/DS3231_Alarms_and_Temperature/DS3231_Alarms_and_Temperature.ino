@@ -14,6 +14,8 @@
 // DS3231 GND --> GND
 // DS3231 SQW --> DIGITAL PIN 2 or any other pin supporting an interrupt (See table here below)
 
+// ------> For this example you *MUST* connect the DS3231 SQW signal to an interrupt pin!!!
+
 // +-------------------+-----------------------------------+
 // |                   |  I N T E R R U P T   N U M B E R  |
 // |     B O A R D     +-----+-----+-----+-----+-----+-----+
@@ -48,6 +50,8 @@
 // Uncomment the #define here below if you want to use
 // the SoftwareWire library (... and remember to install it!)
 // #define RTC_SOFTWARE_WIRE
+#define SOFTWARE_WIRE_SDA SDA  // Or whatever other pin you use
+#define SOFTWARE_WIRE_SCL SCL  // Or whatever other pin you use
 
 
 // ------> I M P O R T A N T !  <------
@@ -68,26 +72,26 @@ volatile unsigned long interruptCount = 0;
 volatile bool interruptFlag = false;
 unsigned long loops = 0;
 
-
 // We NEED the standard C time library...
 #include <time.h>
 
 // This contains a function to convert the __DATE__ and __TIME__ macros to a time_t value
 #include "RTCtimeUtils.h"
 
-// Here where we instantiate our "Rtc" object
-// In your project you can get rid of all this stuff, if you want, and just #include and initialize what you need
-#ifndef RTC_SOFTWARE_WIRE
-  #include <Wire.h>
-  #include <RtcDS3231.h>
-  RtcDS3231<TwoWire> Rtc(Wire);
-#else
+// Define which TWI/I2C API is used
+#ifdef RTC_SOFTWARE_WIRE
   #include <SoftwareWire.h>
-  #include <RtcDS3231.h>
-  SoftwareWire myWire(SDA, SCL);
-  RtcDS3231<SoftwareWire> Rtc(myWire);
+  #define myWire SoftwareWire
+  myWire I2C(SOFTWARE_WIRE_SDA, SOFTWARE_WIRE_SCL);
+#else
+  #include <Wire.h>
+  #define myWire TwoWire
+  #define I2C Wire
 #endif
 
+// Here where we instantiate our "Rtc" object
+  #include <RtcDS3231.h>
+  RtcDS3231<myWire> Rtc(I2C);
 
 // Scheduler:
 // We will have our loop() "freerunning" and we will print out our time only when an alarm is triggered.
