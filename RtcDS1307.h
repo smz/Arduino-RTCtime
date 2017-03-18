@@ -133,7 +133,7 @@ public:
         now.tm_hour = BcdHourToUint8(_wire.read());
         now.tm_wday = _wire.read() - 1;
         now.tm_mday = BcdToUint8(_wire.read());
-        now.tm_mon = BcdToUint8(_wire.read());
+        now.tm_mon = BcdToUint8(_wire.read()) - 1;
         now.tm_year = BcdToUint8(_wire.read()) + 100;
 
         return mk_gmtime(&now);
