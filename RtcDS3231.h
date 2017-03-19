@@ -263,7 +263,7 @@ public:
     {
         // clear the invalid flag
         uint8_t status = getReg(DS3231_REG_STATUS);
-        status &= ~_BV(DS3231_OSF); // clear the flag
+        status &= ~_BV(DS3231_OSF); // clear the Oscillator Stop Flag
         setReg(DS3231_REG_STATUS, status);
 
         // set the date time
