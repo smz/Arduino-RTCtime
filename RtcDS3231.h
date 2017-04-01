@@ -4,6 +4,10 @@
 #include <Arduino.h>
 #include <time.h>
 
+// We define _BV here in case it hasn't been already (Oddly, it is not defined for the DUE board...)
+#ifndef _BV
+#define _BV(b) (1UL << (b))
+#endif
 
 //I2C Slave Address
 const uint8_t DS3231_ADDRESS = 0x68;
