@@ -530,9 +530,9 @@ public:
 
         // Read scaled 16-bit 2's complement integer and return degC float	    
         _wire.requestFrom(DS3231_ADDRESS, DS3231_REG_TEMP_SIZE);
-        uint8_t mstemp = Wire.read();
+        uint8_t mstemp = _wire.read();
 	//                   MSBYTE         LSBYTE    
-        return(  (int16_t)( (mstemp << 8) | (uint8_t)Wire.read() ) / 256.0f  );
+        return(  (int16_t)( (mstemp << 8) | (uint8_t)_wire.read() ) / 256.0f  );
     }
 
 
