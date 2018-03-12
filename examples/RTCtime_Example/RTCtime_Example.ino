@@ -1,4 +1,8 @@
 
+// ------> V E R Y   V E R Y   I M P O R T A N T !  <------
+// This example cannot be compiled for the ESP8266, due to incompabilities with its <time.h> library
+
+
 // ------> V E R Y   I M P O R T A N T !  <------
 // CONNECTIONS:
 //
