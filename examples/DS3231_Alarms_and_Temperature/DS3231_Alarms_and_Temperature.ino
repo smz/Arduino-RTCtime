@@ -2,7 +2,6 @@
 // ------> V E R Y   V E R Y   I M P O R T A N T !  <------
 // This exemaple works only with a DS3231 RTC, which has alarms
 // It is not possible to have it working with a DS1307 which lacks that feature
-// This example cannot be compiled for the ESP8266, due to incompabilities with its <time.h> library
 
 
 // ------> V E R Y   I M P O R T A N T !  <------
