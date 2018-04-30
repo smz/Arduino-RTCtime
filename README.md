@@ -35,7 +35,7 @@ The SoftwareWire I2C bus library is supported.
 
 ## Examples
 
- - There are a couple of commented examples in the `./examples` folder. You might try them and use them as a reference, until I write a more formal API documentation (_See note above for ESP8266_)
+ - There are a couple of commented examples in the `./examples` folder. You might try them and use them as a reference, until I write a more formal API documentation.
 
 ## Donating
 If you like this library and you use it, please consider donating, but please __consider donating to the orignal devloper too__, as **he** did much of the work! 
