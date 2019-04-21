@@ -2,7 +2,7 @@
 
 **An Arduino Real Time Clock library.**
 
-This library makes using modules based on the DS1307 and DS3231 RTC really simple. It is compatible with and is meant to leverage the standard C time library `<time.h>` API (datatypes and functions) as defined in [ISO/IEC 9899 (C90)](http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1124.pdf) and implemented in the AVR Std C runtime libray since version 2.0.0 (_available in the Arduino IDE since version 1.6.10_).
+This library makes using modules based on the DS1307 and DS3231 RTC really simple. It is compatible with and is meant to leverage the standard C time library `<time.h>` API (datatypes and functions) as defined in [ISO/IEC 9899 (C90)](http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1124.pdf) and implemented in the AVR Std C runtime library since version 2.0.0 (_available in the Arduino IDE since version 1.6.10_).
 
 This work started as a fork of the excelent [Rtc by Makuna](https://github.com/Makuna/Rtc) library, but it has been modified to support the Std C time API, while the original "Rtc by Makuna" uses a proprietary API.
 
