@@ -38,6 +38,4 @@ The SoftwareWire I2C bus library is supported.
  - There are a couple of commented examples in the `./examples` folder. You might try them and use them as a reference, until I write a more formal API documentation.
 
 ## Donating
-If you like this library and you use it, please consider donating, but please __consider donating to the orignal devloper too__, as **he** did much of the work! 
-
-[![Donate](http://img.shields.io/paypal/donate.png?color=yellow)](https://www.paypal.me/SergioManzi)
+If you like this library and you use it, please consider donating through [my PayPal page](https://www.paypal.me/SergioManzi), thank-you!
